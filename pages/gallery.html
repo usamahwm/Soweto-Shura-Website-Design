@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Gallery – Soweto Muslim Shura</title>
+<link rel="stylesheet" href="../assets/css/style.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: #f7faf7; color: #1a1a1a; overflow-x: hidden; }
+:root {
+  --g: #54B435; --g-dk: #3a8024; --g-lt: #6fcc4f;
+  --g-pale: #edf7e9; --g-dim: rgba(84,180,53,.12);
+  --bg-dark: #0d1f0a; --bg-mid: #162e10;
+  --ink: #111a10; --muted: #5a6b57; --border: #d8ead3; --radius: 6px;
+}
+
+/* PAGE HERO */
+.page-hero {
+  background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-mid) 55%, #1a3d12 100%);
+  padding: 5.5rem 4.5rem 5rem; position: relative; overflow: hidden;
+}
+.page-hero::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(84,180,53,.07) 1px, transparent 1px); background-size: 26px 26px; }
+.page-hero__inner { position: relative; z-index: 1; max-width: 680px; }
+.eyebrow { display: flex; align-items: center; gap: .6rem; margin-bottom: 1.2rem; }
+.eyebrow__bar { width: 28px; height: 2px; background: var(--g); border-radius: 2px; }
+.eyebrow__text { font-size: .68rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--g-lt); }
+.page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 4vw, 3.8rem); font-weight: 700; color: #fff; line-height: 1.1; margin-bottom: 1rem; }
+.page-hero h1 em { font-style: italic; font-weight: 400; color: var(--g-lt); }
+.page-hero p { font-size: 1rem; color: rgba(255,255,255,.62); line-height: 1.8; }
+
+/* FILTER BAR */
+.gal-filter {
+  background: #fff; padding: 1.8rem 4.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+}
+.filter-chips { display: flex; gap: .5rem; flex-wrap: wrap; }
+.chip { font-size: .72rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: .45rem 1rem; border-radius: 20px; border: 1.5px solid var(--border); background: #fff; color: var(--muted); cursor: pointer; transition: all .2s; }
+.chip.active, .chip:hover { background: var(--g); color: #fff; border-color: var(--g); }
+.gal-count { margin-left: auto; font-size: .8rem; color: var(--muted); }
+.gal-count span { font-weight: 700; color: var(--g-dk); }
+
+/* GALLERY GRID */
+.gal-body { padding: 3rem 4.5rem 5rem; }
+
+.masonry {
+  columns: 3; column-gap: 1.25rem;
+}
+.masonry-item {
+  break-inside: avoid; margin-bottom: 1.25rem;
+  border-radius: 8px; overflow: hidden; position: relative;
+  cursor: pointer; display: block;
+}
+.masonry-item img {
+  width: 100%; display: block;
+  transition: transform .4s ease;
+}
+.masonry-item:hover img { transform: scale(1.04); }
+.masonry-item__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(13,31,10,.75) 0%, transparent 50%);
+  opacity: 0; transition: opacity .3s;
+  display: flex; align-items: flex-end; padding: 1.2rem;
+}
+.masonry-item:hover .masonry-item__overlay { opacity: 1; }
+.masonry-item__label {
+  font-size: .78rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: #fff; background: rgba(84,180,53,.8); padding: .3rem .7rem; border-radius: 4px;
+}
+
+/* LIGHTBOX */
+.lightbox {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,.92); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center;
+  padding: 2rem;
+}
+.lightbox.open { display: flex; }
+.lightbox__img { max-width: 90vw; max-height: 85vh; border-radius: 6px; object-fit: contain; }
+.lightbox__close {
+  position: absolute; top: 1.5rem; right: 2rem;
+  background: none; border: none; color: #fff; font-size: 2rem;
+  cursor: pointer; line-height: 1; opacity: .7; transition: opacity .2s;
+}
+.lightbox__close:hover { opacity: 1; }
+.lightbox__nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,.1); border: none; color: #fff;
+  font-size: 1.8rem; width: 50px; height: 50px; border-radius: 50%;
+  cursor: pointer; transition: background .2s; display: flex; align-items: center; justify-content: center;
+}
+.lightbox__nav:hover { background: rgba(84,180,53,.5); }
+.lightbox__prev { left: 1.5rem; }
+.lightbox__next { right: 1.5rem; }
+.lightbox__caption {
+  position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+  font-size: .8rem; letter-spacing: .1em; color: rgba(255,255,255,.6); white-space: nowrap;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+.reveal { opacity: 0; }
+.reveal.visible { animation: fadeUp .6s ease both; }
+.page-hero__inner > * { animation: fadeUp .65s ease both; }
+.page-hero__inner .eyebrow { animation-delay: .05s; }
+.page-hero__inner h1 { animation-delay: .18s; }
+.page-hero__inner p { animation-delay: .3s; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .page-hero, .gal-filter, .gal-body { padding-left: 1.75rem; padding-right: 1.75rem; }
+  .page-hero { padding-top: 4rem; padding-bottom: 3.5rem; }
+  .masonry { columns: 2; }
+}
+@media (max-width: 560px) {
+  .page-hero, .gal-filter, .gal-body { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .page-hero { padding-top: 3.5rem; padding-bottom: 3rem; }
+  .masonry { columns: 1; }
+  .lightbox__nav { display: none; }
+}
+</style>
+</head>
+<body>
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html" class="nav__logo">
+    <div class="nav__logo-mark">ش</div>
+    <div class="nav__logo-text">Soweto Muslim Shura<span>Council</span></div>
+  </a>
+  <ul class="nav__links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="directory.html">Directory</a></li>
+  </ul>
+  <a href="contact.html" class="nav__cta">Contact Us</a>
+  <button class="nav__hamburger" id="navHamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="nav__mobile" id="navMobile">
+  <a href="../index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="blog.html">Blog</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="directory.html">Directory</a>
+  <a href="contact.html">Contact Us</a>
+</div>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="page-hero__inner">
+    <div class="eyebrow"><div class="eyebrow__bar"></div><span class="eyebrow__text">Our Moments</span></div>
+    <h1><em>Image</em><br>Gallery</h1>
+    <p>A window into our community — events, programmes, gatherings, and the moments that bring us together as one jama'a.</p>
+  </div>
+</section>
+
+<!-- FILTER -->
+<div class="gal-filter">
+  <div class="filter-chips">
+    <span class="chip active" data-cat="all">All</span>
+    <span class="chip" data-cat="events">Events</span>
+    <span class="chip" data-cat="programmes">Programmes</span>
+    <span class="chip" data-cat="community">Community</span>
+  </div>
+  <div class="gal-count">Showing <span id="galCount">6</span> photos</div>
+</div>
+
+<!-- GALLERY -->
+<div class="gal-body">
+  <div class="masonry" id="galleryGrid">
+
+    <div class="masonry-item reveal" data-cat="community">
+      <img src="https://www.sowetoshura.org.za/wp-content/uploads/2025/02/IMG-20250102-WA0030-683x1024.jpg" alt="Community gathering" loading="lazy"/>
+      <div class="masonry-item__overlay"><span class="masonry-item__label">Community</span></div>
+    </div>
+
+    <div class="masonry-item reveal" data-cat="programmes">
+      <img src="https://www.sowetoshura.org.za/wp-content/uploads/2025/02/IMG_1666-scaled.jpg" alt="Family Support Initiative" loading="lazy"/>
+      <div class="masonry-item__overlay"><span class="masonry-item__label">Programmes</span></div>
+    </div>
+
+    <div class="masonry-item reveal" data-cat="events">
+      <img src="https://www.sowetoshura.org.za/wp-content/uploads/2025/02/IMG-20241220-WA0013-768x1152.jpg" alt="Community event" loading="lazy"/>
+      <div class="masonry-item__overlay"><span class="masonry-item__label">Events</span></div>
+    </div>
+
+    <div class="masonry-item reveal" data-cat="community">
+      <img src="https://www.sowetoshura.org.za/wp-content/uploads/2025/02/IMG-20241220-WA0015-scaled.jpg" alt="Community activity" loading="lazy"/>
+      <div class="masonry-item__overlay"><span class="masonry-item__label">Community</span></div>
+    </div>
+
+    <!-- Placeholder cards for visual completeness -->
+    <div class="masonry-item reveal" data-cat="events" style="background:var(--g-pale);min-height:220px;display:flex;align-items:center;justify-content:center;">
+      <div style="text-align:center;color:var(--muted);padding:2rem;">
+        <div style="font-size:2.5rem;margin-bottom:.75rem;">📸</div>
+        <p style="font-size:.85rem;">More photos coming soon</p>
+      </div>
+    </div>
+
+    <div class="masonry-item reveal" data-cat="programmes" style="background:var(--g-dim);min-height:180px;display:flex;align-items:center;justify-content:center;">
+      <div style="text-align:center;color:var(--muted);padding:2rem;">
+        <div style="font-size:2.5rem;margin-bottom:.75rem;">🤲</div>
+        <p style="font-size:.85rem;">Programme highlights</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox__close" id="lbClose">✕</button>
+  <button class="lightbox__nav lightbox__prev" id="lbPrev">‹</button>
+  <img src="" alt="" class="lightbox__img" id="lbImg"/>
+  <button class="lightbox__nav lightbox__next" id="lbNext">›</button>
+  <div class="lightbox__caption" id="lbCaption"></div>
+</div>
+
+<script>
+(function(){
+  // Reveal
+  const els=document.querySelectorAll('.reveal');
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach((e,i)=>{ if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*70); io.unobserve(e.target); } });
+  },{threshold:.08});
+  els.forEach(el=>io.observe(el));
+
+  // Filter
+  const items=[...document.querySelectorAll('.masonry-item')];
+  const chips=[...document.querySelectorAll('.chip')];
+  const countEl=document.getElementById('galCount');
+  chips.forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      chips.forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      const cat=chip.dataset.cat;
+      let v=0;
+      items.forEach(item=>{
+        const show=cat==='all'||item.dataset.cat===cat;
+        item.style.display=show?'':'none';
+        if(show)v++;
+      });
+      countEl.textContent=v;
+    });
+  });
+
+  // Lightbox
+  const imgItems=items.filter(i=>i.querySelector('img'));
+  const lb=document.getElementById('lightbox');
+  const lbImg=document.getElementById('lbImg');
+  const lbCaption=document.getElementById('lbCaption');
+  let current=0;
+
+  function openLb(idx){
+    current=idx;
+    const img=imgItems[idx].querySelector('img');
+    lbImg.src=img.src; lbImg.alt=img.alt;
+    lbCaption.textContent=(idx+1)+' / '+imgItems.length;
+    lb.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeLb(){ lb.classList.remove('open'); document.body.style.overflow=''; }
+
+  imgItems.forEach((item,i)=>item.addEventListener('click',()=>openLb(i)));
+  document.getElementById('lbClose').addEventListener('click',closeLb);
+  document.getElementById('lbPrev').addEventListener('click',()=>openLb((current-1+imgItems.length)%imgItems.length));
+  document.getElementById('lbNext').addEventListener('click',()=>openLb((current+1)%imgItems.length));
+  lb.addEventListener('click',e=>{ if(e.target===lb)closeLb(); });
+  document.addEventListener('keydown',e=>{ if(!lb.classList.contains('open'))return; if(e.key==='Escape')closeLb(); if(e.key==='ArrowLeft')document.getElementById('lbPrev').click(); if(e.key==='ArrowRight')document.getElementById('lbNext').click(); });
+})();
+</script>
+<footer>
+  <div class="footer__top">
+    <div class="footer__brand">
+      <a href="../index.html" class="footer__logo"><div class="footer__logo-mark">ش</div><span class="footer__logo-name">Soweto Muslim Shura</span></a>
+      <p>Fostering growth, unity, and compassion in the Muslim community of Soweto since 2009.</p>
+      <div class="footer__tagline">Advocacy • Development • Unity</div>
+    </div>
+    <div class="footer__col"><h4>Navigate</h4><ul>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="directory.html">Directory</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul></div>
+    <div class="footer__col"><h4>Services</h4><ul>
+      <li><a href="about.html">Pre-Marital Classes</a></li>
+      <li><a href="about.html">Marriage Counselling</a></li>
+      <li><a href="about.html">Mediation</a></li>
+      <li><a href="about.html">Talaqs &amp; Annulments</a></li>
+      <li><a href="about.html">Estate Planning</a></li>
+      <li><a href="about.html">Social Welfare</a></li>
+    </ul></div>
+    <div class="footer__col"><h4>Contact</h4><address>1706 Nyathi Street<br>Dlamini, Soweto 1816<br>Gauteng, South Africa<br><br><a href="tel:+27782014691">+27 78 201 4691</a><br><a href="mailto:info@sowetoshura.org.za">info@sowetoshura.org.za</a></address></div>
+  </div>
+  <div class="footer__bottom">
+    <p>&copy; 2026 Soweto Muslim Shura Council. Crafted by <a href="http://syndeodigital.co.za" target="_blank">Syndeo Digital</a>.</p>
+  </div>
+</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

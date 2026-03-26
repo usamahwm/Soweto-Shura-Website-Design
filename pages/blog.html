@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Blog – Soweto Muslim Shura</title>
+<link rel="stylesheet" href="../assets/css/style.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: #f7faf7; color: #1a1a1a; overflow-x: hidden; }
+:root {
+  --g: #54B435; --g-dk: #3a8024; --g-lt: #6fcc4f;
+  --g-pale: #edf7e9; --g-dim: rgba(84,180,53,.12);
+  --bg-dark: #0d1f0a; --bg-mid: #162e10;
+  --ink: #111a10; --muted: #5a6b57; --border: #d8ead3; --radius: 6px;
+}
+
+/* PAGE HERO */
+.page-hero {
+  background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-mid) 55%, #1a3d12 100%);
+  padding: 5.5rem 4.5rem 5rem; position: relative; overflow: hidden;
+}
+.page-hero::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(84,180,53,.07) 1px, transparent 1px); background-size: 26px 26px; }
+.page-hero__inner { position: relative; z-index: 1; max-width: 680px; }
+.eyebrow { display: flex; align-items: center; gap: .6rem; margin-bottom: 1.2rem; }
+.eyebrow__bar { width: 28px; height: 2px; background: var(--g); border-radius: 2px; }
+.eyebrow__text { font-size: .68rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--g-lt); }
+.page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 4vw, 3.8rem); font-weight: 700; color: #fff; line-height: 1.1; margin-bottom: 1rem; }
+.page-hero h1 em { font-style: italic; font-weight: 400; color: var(--g-lt); }
+.page-hero p { font-size: 1rem; color: rgba(255,255,255,.62); line-height: 1.8; }
+
+/* BLOG BODY */
+.blog-body { padding: 4rem 4.5rem 5rem; display: grid; grid-template-columns: 1fr 320px; gap: 3.5rem; max-width: 1200px; margin: 0 auto; }
+
+/* POSTS */
+.posts-grid { display: flex; flex-direction: column; gap: 2rem; }
+
+/* Featured post */
+.post-card--featured {
+  background: #fff; border-radius: 10px; border: 1px solid var(--border);
+  overflow: hidden; display: grid; grid-template-columns: 1fr 1fr;
+  transition: transform .25s, box-shadow .25s;
+}
+.post-card--featured:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(84,180,53,.1); }
+.post-card--featured .post-img { height: 100%; min-height: 280px; object-fit: cover; width: 100%; display: block; }
+.post-card--featured .post-body { padding: 2.2rem; display: flex; flex-direction: column; gap: .75rem; }
+
+/* Regular post */
+.post-card {
+  background: #fff; border-radius: 10px; border: 1px solid var(--border);
+  overflow: hidden; display: grid; grid-template-columns: 200px 1fr;
+  transition: transform .25s, box-shadow .25s;
+}
+.post-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(84,180,53,.1); }
+.post-card .post-img { height: 100%; min-height: 160px; object-fit: cover; width: 100%; display: block; }
+.post-card .post-body { padding: 1.8rem; display: flex; flex-direction: column; gap: .6rem; }
+.post-img--placeholder { background: var(--g-pale); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+
+.post-cat { font-size: .65rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--g); }
+.post-title { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--ink); line-height: 1.25; text-decoration: none; display: block; }
+.post-card--featured .post-title { font-size: 1.5rem; }
+.post-card .post-title { font-size: 1.1rem; }
+.post-title:hover { color: var(--g-dk); }
+.post-excerpt { font-size: .88rem; line-height: 1.72; color: var(--muted); flex: 1; }
+.post-meta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; padding-top: .5rem; border-top: 1px solid var(--border); margin-top: auto; }
+.post-date { font-size: .72rem; color: var(--muted); }
+.post-read { font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--g); text-decoration: none; margin-left: auto; }
+.post-read:hover { color: var(--g-dk); }
+.post-badge { font-size: .6rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; background: var(--g); color: #fff; padding: .25rem .6rem; border-radius: 20px; }
+
+/* SIDEBAR */
+.blog-sidebar { display: flex; flex-direction: column; gap: 2rem; }
+.sidebar-widget { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 1.8rem; }
+.sidebar-widget h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--ink); margin-bottom: 1.2rem; padding-bottom: .75rem; border-bottom: 2px solid var(--g-pale); }
+
+/* Hadith widget */
+.hadith-widget { background: linear-gradient(145deg, var(--bg-mid), #1c3d13); border: 1px solid rgba(84,180,53,.2); }
+.hadith-widget h3 { color: var(--g-lt); border-bottom-color: rgba(84,180,53,.2); }
+.hadith-arabic-sm { font-family: 'Aref Ruqaa', serif; font-size: 1.1rem; color: var(--g-lt); text-align: right; direction: rtl; padding: .75rem .9rem; background: rgba(84,180,53,.07); border-right: 2px solid var(--g); border-radius: 3px; margin-bottom: .9rem; transition: opacity .4s; }
+.hadith-text-sm { font-family: 'Playfair Display', serif; font-size: .92rem; font-style: italic; color: rgba(255,255,255,.85); line-height: 1.7; min-height: 60px; transition: opacity .4s; }
+.hadith-source-sm { font-size: .65rem; color: rgba(255,255,255,.35); margin-top: .65rem; padding-top: .65rem; border-top: 1px solid rgba(255,255,255,.08); transition: opacity .4s; }
+.hadith-btn-sm { margin-top: 1rem; width: 100%; background: var(--g); border: none; border-radius: var(--radius); padding: .6rem; color: #fff; font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: background .2s; }
+.hadith-btn-sm:hover { background: var(--g-lt); }
+.fading { opacity: 0 !important; }
+
+/* Categories */
+.cat-list { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+.cat-list li a { display: flex; align-items: center; justify-content: space-between; font-size: .9rem; color: var(--muted); text-decoration: none; padding: .5rem 0; border-bottom: 1px solid var(--border); transition: color .2s; }
+.cat-list li a:hover { color: var(--g-dk); }
+.cat-list li a span { font-size: .72rem; background: var(--g-pale); color: var(--g-dk); padding: .2rem .55rem; border-radius: 20px; font-weight: 600; }
+
+/* Recent */
+.recent-list { display: flex; flex-direction: column; gap: 1rem; }
+.recent-item { display: flex; gap: .85rem; align-items: flex-start; }
+.recent-item__icon { width: 44px; height: 44px; background: var(--g-pale); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.recent-item a { font-size: .88rem; font-weight: 500; color: var(--ink); text-decoration: none; line-height: 1.4; display: block; margin-bottom: .25rem; }
+.recent-item a:hover { color: var(--g-dk); }
+.recent-item span { font-size: .72rem; color: var(--muted); }
+
+/* NEWSLETTER */
+.newsletter { background: var(--g-pale); padding: 4rem 4.5rem; border-top: 1px solid var(--border); }
+.newsletter__inner { max-width: 560px; margin: 0 auto; text-align: center; }
+.section-tag { display: inline-flex; align-items: center; gap: .5rem; font-size: .65rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--g); margin-bottom: 1.1rem; justify-content: center; }
+.section-tag::before { content: ''; width: 22px; height: 2px; background: var(--g); border-radius: 2px; }
+.newsletter h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 2.2vw, 2.2rem); font-weight: 700; color: var(--ink); margin-bottom: .75rem; }
+.newsletter p { font-size: .95rem; color: var(--muted); line-height: 1.75; margin-bottom: 1.75rem; }
+.newsletter-form { display: flex; gap: .75rem; flex-wrap: wrap; }
+.newsletter-form input { flex: 1; min-width: 200px; font-family: 'DM Sans', sans-serif; font-size: .93rem; padding: .82rem 1rem; border: 1.5px solid var(--border); border-radius: var(--radius); outline: none; transition: border-color .2s; background: #fff; }
+.newsletter-form input:focus { border-color: var(--g); }
+.newsletter-form button { background: var(--g); color: #fff; border: none; border-radius: var(--radius); padding: .82rem 1.6rem; font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: background .2s; white-space: nowrap; }
+.newsletter-form button:hover { background: var(--g-lt); }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+.reveal { opacity: 0; }
+.reveal.visible { animation: fadeUp .6s ease both; }
+.page-hero__inner > * { animation: fadeUp .65s ease both; }
+.page-hero__inner .eyebrow { animation-delay: .05s; }
+.page-hero__inner h1 { animation-delay: .18s; }
+.page-hero__inner p { animation-delay: .3s; }
+
+/* RESPONSIVE */
+@media (max-width: 1000px) {
+  .blog-body { grid-template-columns: 1fr; }
+  .blog-sidebar { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); }
+}
+@media (max-width: 860px) {
+  .page-hero, .blog-body, .newsletter { padding-left: 1.75rem; padding-right: 1.75rem; }
+  .page-hero { padding-top: 4rem; padding-bottom: 3.5rem; }
+  .post-card--featured { grid-template-columns: 1fr; }
+  .post-card--featured .post-img { height: 220px; }
+}
+@media (max-width: 560px) {
+  .page-hero, .blog-body, .newsletter { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .page-hero { padding-top: 3.5rem; padding-bottom: 3rem; }
+  .post-card { grid-template-columns: 1fr; }
+  .post-card .post-img { height: 180px; }
+  .blog-sidebar { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html" class="nav__logo">
+    <div class="nav__logo-mark">ش</div>
+    <div class="nav__logo-text">Soweto Muslim Shura<span>Council</span></div>
+  </a>
+  <ul class="nav__links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="directory.html">Directory</a></li>
+  </ul>
+  <a href="contact.html" class="nav__cta">Contact Us</a>
+  <button class="nav__hamburger" id="navHamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="nav__mobile" id="navMobile">
+  <a href="../index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="blog.html">Blog</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="directory.html">Directory</a>
+  <a href="contact.html">Contact Us</a>
+</div>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="page-hero__inner">
+    <div class="eyebrow"><div class="eyebrow__bar"></div><span class="eyebrow__text">News &amp; Insights</span></div>
+    <h1>Community<br><em>Blog</em></h1>
+    <p>Stay informed with the latest news, announcements, Islamic insights, and updates from the Soweto Muslim Shura Council.</p>
+  </div>
+</section>
+
+<!-- BLOG BODY -->
+<div class="blog-body">
+
+  <!-- POSTS -->
+  <div class="posts-grid">
+
+    <!-- Featured -->
+    <article class="post-card--featured reveal">
+      <img src="https://www.sowetoshura.org.za/wp-content/uploads/2025/02/IMG_1666-scaled.jpg" alt="Family Support Initiative" class="post-img" loading="lazy"/>
+      <div class="post-body">
+        <span class="post-badge">Featured</span>
+        <span class="post-cat">Programmes</span>
+        <a href="#" class="post-title">Launching the Soweto Family Support Initiative</a>
+        <p class="post-excerpt">The Soweto Family Support Initiative marks a major milestone in our efforts to strengthen Muslim families. Starting with two landmark community consultations, we are building something lasting.</p>
+        <div class="post-meta">
+          <span class="post-date">March 9, 2025</span>
+          <a href="#" class="post-read">Read More →</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Post 2 -->
+    <article class="post-card reveal">
+      <img src="https://www.sowetoshura.org.za/wp-content/uploads/2025/02/IMG-20241220-WA0013-768x1152.jpg" alt="Community event" class="post-img" loading="lazy"/>
+      <div class="post-body">
+        <span class="post-cat">Community</span>
+        <a href="#" class="post-title">Building Bonds: Our December Community Day</a>
+        <p class="post-excerpt">Reflecting on a meaningful day of service, giving, and togetherness as the Soweto Muslim community gathered to support one another.</p>
+        <div class="post-meta">
+          <span class="post-date">December 20, 2024</span>
+          <a href="#" class="post-read">Read More →</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Post 3 -->
+    <article class="post-card reveal">
+      <div class="post-img post-img--placeholder">🕌</div>
+      <div class="post-body">
+        <span class="post-cat">Islamic Guidance</span>
+        <a href="#" class="post-title">Understanding Islamic Family Law in the South African Context</a>
+        <p class="post-excerpt">A practical guide to how Islamic family law interacts with South African civil law — and how the Shura Council can help navigate it.</p>
+        <div class="post-meta">
+          <span class="post-date">November 15, 2024</span>
+          <a href="#" class="post-read">Read More →</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Post 4 -->
+    <article class="post-card reveal">
+      <div class="post-img post-img--placeholder">📋</div>
+      <div class="post-body">
+        <span class="post-cat">Announcements</span>
+        <a href="#" class="post-title">Shura Council Annual Report: A Year of Growth</a>
+        <p class="post-excerpt">Highlights from the past year — the programmes we ran, the families we served, and where we are headed in the year to come.</p>
+        <div class="post-meta">
+          <span class="post-date">January 5, 2025</span>
+          <a href="#" class="post-read">Read More →</a>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="blog-sidebar">
+
+    <!-- Hadith widget -->
+    <div class="sidebar-widget hadith-widget">
+      <h3>Daily Hadith</h3>
+      <div class="hadith-arabic-sm" id="sArabic" aria-hidden="true"></div>
+      <p class="hadith-text-sm" id="sText"></p>
+      <div class="hadith-source-sm" id="sSource"></div>
+      <button class="hadith-btn-sm" id="sRefresh">↻ Another Hadith</button>
+    </div>
+
+    <!-- Categories -->
+    <div class="sidebar-widget">
+      <h3>Categories</h3>
+      <ul class="cat-list">
+        <li><a href="#">Programmes <span>3</span></a></li>
+        <li><a href="#">Community <span>5</span></a></li>
+        <li><a href="#">Islamic Guidance <span>4</span></a></li>
+        <li><a href="#">Announcements <span>6</span></a></li>
+        <li><a href="#">Events <span>8</span></a></li>
+      </ul>
+    </div>
+
+    <!-- Recent posts -->
+    <div class="sidebar-widget">
+      <h3>Recent Posts</h3>
+      <div class="recent-list">
+        <div class="recent-item">
+          <div class="recent-item__icon">👨‍👩‍👧</div>
+          <div>
+            <a href="#">Launching the Family Support Initiative</a>
+            <span>March 9, 2025</span>
+          </div>
+        </div>
+        <div class="recent-item">
+          <div class="recent-item__icon">🤝</div>
+          <div>
+            <a href="#">Annual Community Day Recap</a>
+            <span>December 20, 2024</span>
+          </div>
+        </div>
+        <div class="recent-item">
+          <div class="recent-item__icon">⚖️</div>
+          <div>
+            <a href="#">Islamic Family Law Guide</a>
+            <span>November 15, 2024</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- NEWSLETTER -->
+<div class="newsletter reveal">
+  <div class="newsletter__inner">
+    <div class="section-tag">Stay Updated</div>
+    <h2>Subscribe to Our Newsletter</h2>
+    <p>Get community updates, Islamic reminders, and programme announcements delivered to your inbox.</p>
+    <div class="newsletter-form">
+      <input type="email" placeholder="Enter your email address"/>
+      <button type="button">Subscribe</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // Reveal
+  const els=document.querySelectorAll('.reveal');
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach((e,i)=>{ if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*80); io.unobserve(e.target); } });
+  },{threshold:.08});
+  els.forEach(el=>io.observe(el));
+
+  // Sidebar hadith
+  const ahadith=[
+    {arabic:"إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",text:"Actions are judged only by intentions.",source:"Sahih al-Bukhari 1"},
+    {arabic:"خَيْرُ النَّاسِ أَنْفَعُهُمْ لِلنَّاسِ",text:"The best of people are those who bring the most benefit to others.",source:"Silsilah al-Sahihah 426"},
+    {arabic:"ابْتَسَامَتُكَ فِي وَجْهِ أَخِيكَ صَدَقَةٌ",text:"Your smile in the face of your brother is an act of charity.",source:"Jami' al-Tirmidhi 1956"},
+    {arabic:"يَسِّرُوا وَلَا تُعَسِّرُوا",text:"Make things easy for people, and do not make them difficult.",source:"Sahih al-Bukhari 69"},
+    {arabic:"الطُّهُورُ شَطْرُ الإِيمَانِ",text:"Cleanliness is half of faith.",source:"Sahih Muslim 223"},
+    {arabic:"إِنَّ اللَّهَ رَفِيقٌ يُحِبُّ الرِّفْقَ",text:"Verily, Allah is gentle and He loves gentleness in all matters.",source:"Sahih Muslim 2165"}
+  ];
+  let cur=-1;
+  function nxt(){let n;do{n=Math.floor(Math.random()*ahadith.length);}while(n===cur&&ahadith.length>1);return n;}
+  function show(idx,anim){
+    const t=document.getElementById('sText'),s=document.getElementById('sSource'),a=document.getElementById('sArabic');
+    const h=ahadith[idx];
+    const set=()=>{t.textContent='\u201C'+h.text+'\u201D';s.textContent=h.source;a.textContent=h.arabic;cur=idx;};
+    if(anim){[t,s,a].forEach(el=>el.classList.add('fading'));setTimeout(()=>{set();[t,s,a].forEach(el=>el.classList.remove('fading'));},380);}else{set();}
+  }
+  document.getElementById('sRefresh').addEventListener('click',()=>show(nxt(),true));
+  show(nxt(),false);
+})();
+</script>
+<footer>
+  <div class="footer__top">
+    <div class="footer__brand">
+      <a href="../index.html" class="footer__logo"><div class="footer__logo-mark">ش</div><span class="footer__logo-name">Soweto Muslim Shura</span></a>
+      <p>Fostering growth, unity, and compassion in the Muslim community of Soweto since 2009.</p>
+      <div class="footer__tagline">Advocacy • Development • Unity</div>
+    </div>
+    <div class="footer__col"><h4>Navigate</h4><ul>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="directory.html">Directory</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul></div>
+    <div class="footer__col"><h4>Services</h4><ul>
+      <li><a href="about.html">Pre-Marital Classes</a></li>
+      <li><a href="about.html">Marriage Counselling</a></li>
+      <li><a href="about.html">Mediation</a></li>
+      <li><a href="about.html">Talaqs &amp; Annulments</a></li>
+      <li><a href="about.html">Estate Planning</a></li>
+      <li><a href="about.html">Social Welfare</a></li>
+    </ul></div>
+    <div class="footer__col"><h4>Contact</h4><address>1706 Nyathi Street<br>Dlamini, Soweto 1816<br>Gauteng, South Africa<br><br><a href="tel:+27782014691">+27 78 201 4691</a><br><a href="mailto:info@sowetoshura.org.za">info@sowetoshura.org.za</a></address></div>
+  </div>
+  <div class="footer__bottom">
+    <p>&copy; 2026 Soweto Muslim Shura Council. Crafted by <a href="http://syndeodigital.co.za" target="_blank">Syndeo Digital</a>.</p>
+  </div>
+</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
